@@ -1,29 +1,24 @@
+import asyncio
 import logging
 import os
-
-import asyncio
-from dotenv import load_dotenv
 
 import pandas as pd
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import FSInputFile
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 
-bot_token = os.getenv("BOT_TOKEN")
-if bot_token is None:
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+if BOT_TOKEN is None:
     raise ValueError("BOT_TOKEN environment variable is not set")
 
-bot = Bot(token=bot_token)
+bot = Bot(token=os.getenv("BOT_TOKEN"))
 
 dp = Dispatcher()
-
-db_file_path = "exchange_rates.db"
-excel_file_name = "exchange_rates.xlsx"
-table_name = "exchange_rates"
 
 file_ids = []
 

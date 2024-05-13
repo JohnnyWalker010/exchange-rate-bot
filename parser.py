@@ -1,13 +1,12 @@
-from datetime import datetime
 import time
+from datetime import datetime
 
 import pandas as pd
 import requests
 from lxml import html
 
+from constants import URL
 from database import ExchangeRate, session
-
-URL = "https://www.google.com/finance/quote/USD-UAH"
 
 
 def get_and_save_exchange_rates():
@@ -16,8 +15,7 @@ def get_and_save_exchange_rates():
     and adds it to the database.
     """
 
-    url = "https://www.google.com/finance/quote/USD-UAH"
-    response = requests.get(url)
+    response = requests.get(URL)
     tree = html.fromstring(response.content)
 
     xpath_expression = (
@@ -30,10 +28,10 @@ def get_and_save_exchange_rates():
         rate = rate_element[0].text_content().strip()
         print(f"Current exchange rate: {rate}")
 
-        current_time = datetime.now()
-        date = current_time.strftime("%Y-%m-%d")
-        hour = current_time.strftime("%H")
-        time_str = current_time.strftime("%H:%M:%S")
+        time_now = datetime.now()
+        date = time_now.strftime("%Y-%m-%d")
+        hour = time_now.strftime("%H")
+        time_str = time_now.strftime("%H:%M:%S")
 
         file_name = f"exchange_rates_{date}.xlsx"
         try:
