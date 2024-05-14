@@ -1,9 +1,8 @@
 import time
 from datetime import datetime
-
 import pandas as pd
 import requests
-from lxml import html
+from bs4 import BeautifulSoup
 
 from constants import URL
 from database import ExchangeRate, session
@@ -16,16 +15,16 @@ def get_and_save_exchange_rates():
     """
 
     response = requests.get(URL)
-    tree = html.fromstring(response.content)
+    soup = BeautifulSoup(response.content, "html.parser")
 
-    xpath_expression = (
-        '//*[@id="yDmH0d"]/c-wiz[2]/div/div[4]/div/main/div[2]/div[1]/c-wiz/div/div[1]/div/div['
-        "1]/div/div[1]/div/span/div/div"
+    path = (
+        "div.VfPpkd-WsjYwc.VfPpkd-WsjYwc-OWXEXe-INsAgc.KC1dQ.Usd1Ac.AaN0Dd.QZMA8b > c-wiz > div > "
+        "div:nth-child(1) > div > div.rPF6Lc > div > div:nth-child(1) > div > span > div > div"
     )
 
-    rate_element = tree.xpath(xpath_expression)
+    rate_element = soup.select_one(path)
     if rate_element:
-        rate = rate_element[0].text_content().strip()
+        rate = float(rate_element.get_text(strip=True))
         print(f"Current exchange rate: {rate}")
 
         time_now = datetime.now()
